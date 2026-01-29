@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Previsão do Tempo</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌤️ Previsão do Tempo</h1>
+            <p>Descubra o clima em qualquer lugar do mundo</p>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="cityInput" 
+                    placeholder="Digite o nome da cidade..." 
+                    autocomplete="off"
+                >
+                <button id="searchBtn" onclick="searchWeather()">Buscar</button>
+            </div>
+            <div id="suggestions" class="suggestions"></div>
+        </section>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner hidden">
+            <div class="spinner"></div>
+            <p>Carregando dados do tempo...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <!-- Current Weather -->
+        <section id="currentWeather" class="current-weather hidden">
+            <div class="weather-card">
+                <div class="location-info">
+                    <h2 id="cityName"></h2>
+                    <p id="lastUpdate"></p>
+                </div>
+
+                <div class="weather-main">
+                    <div class="temperature-section">
+                        <div id="weatherEmoji" class="weather-emoji"></div>
+                        <div class="temperature-info">
+                            <span id="currentTemp" class="temperature"></span>
+                            <span class="unit">°C</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <span class="label">Sensação Térmica</span>
+                            <span id="apparentTemp" class="value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Umidade</span>
+                            <span id="humidity" class="value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Vento</span>
+                            <span id="windSpeed" class="value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Direção do Vento</span>
+                            <span id="windDirection" class="value"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-description">
+                    <p id="weatherDesc"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hourly Forecast -->
+        <section id="hourlySection" class="forecast-section hidden">
+            <h3>Previsão por Hora (Próximas 24 Horas)</h3>
+            <div id="hourlyForecast" class="hourly-forecast"></div>
+        </section>
+
+        <!-- Daily Forecast -->
+        <section id="dailySection" class="forecast-section hidden">
+            <h3>Previsão para os Próximos 7 Dias</h3>
+            <div id="dailyForecast" class="daily-forecast"></div>
+        </section>
+
+        <!-- Default Message -->
+        <section id="defaultMessage" class="default-message">
+            <div class="welcome-box">
+                <h2>👋 Bem-vindo ao App de Previsão do Tempo</h2>
+                <p>Digite o nome de uma cidade acima para começar</p>
+                <ul class="suggestions-list">
+                    <li onclick="searchCity('São Paulo')">São Paulo</li>
+                    <li onclick="searchCity('Rio de Janeiro')">Rio de Janeiro</li>
+                    <li onclick="searchCity('Salvador')">Salvador</li>
+                    <li onclick="searchCity('Brasília')">Brasília</li>
+                    <li onclick="searchCity('Nova York')">Nova York</li>
+                    <li onclick="searchCity('Londres')">Londres</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="../static/script.js"></script>
+</body>
+</html>

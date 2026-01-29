@@ -1,0 +1,67 @@
+# Ambientes virtuais
+venv/
+env/
+ENV/
+.venv
+.env
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Arquivos de log
+*.log
+logs/
+
+# Banco de dados
+*.db
+*.sqlite
+*.sqlite3
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Node modules (se usar npm)
+node_modules/
+package-lock.json
+
+# Arquivos temporários
+*.tmp
+.cache/
+
+# Flask
+instance/
+.webassets-cache
+
+# Certificados
+*.pem
+*.key
+*.crt
