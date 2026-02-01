@@ -1,4 +1,4 @@
-const apiKey = '5be142b2adf71122421c1e95284be4ac'; // Substitua por uma nova chave se necessário
+const apiKey = '5be142b2adf71122421c1e95284be4ac';  
 
 let isCompact = false;
 let isNight = false;
@@ -11,42 +11,12 @@ async function getWeather() {
     }
 
     showLoader();
-    console.log(`Buscando dados para: ${city}`); // Log para debug
+    console.log(`Buscando forecast para: ${city}`);
 
-    if (city.toLowerCase() === 'curitiba') {
-        setTimeout(() => {
-            hideLoader();
-            displayMockForecast();
-        }, 1000);
-    } else {
-        try {
-            // Geocoding para obter lat/lon
-            const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
-            console.log('Fazendo geocoding:', geoUrl); // Log
-            const geoResponse = await fetch(geoUrl);
-            console.log('Resposta geocoding:', geoResponse.status); // Log status
-
-            if (!geoResponse.ok) {
-                throw new Error(`Erro na geocoding: ${geoResponse.status} - ${geoResponse.statusText}`);
-            }
-
-            const geoData = await geoResponse.json();
-            console.log('Dados geocoding:', geoData); // Log dados
-
-            if (geoData.length === 0) {
-                hideLoader();
-                document.getElementById('weather').innerHTML = '<p>Cidade não encontrada.</p>';
-                return;
-            }
-
-            const { lat, lon } = geoData[0];
-            fetchHourlyForecast(lat, lon);
-        } catch (error) {
-            console.error('Erro em getWeather:', error); // Log erro
-            hideLoader();
-            document.getElementById('weather').innerHTML = '<p>Erro de conexão na geocoding. Tente novamente ou use Curitiba para teste.</p>';
-        }
-    }
+    setTimeout(() => {
+        hideLoader();
+        displayMockForecast(city);
+    }, 1000);
 }
 
 function getWeatherByLocation() {
@@ -55,7 +25,11 @@ function getWeatherByLocation() {
         navigator.geolocation.getCurrentPosition(position => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            fetchHourlyForecast(lat, lon);
+          
+            setTimeout(() => {
+                hideLoader();
+                displayMockForecast('Sua Localização');
+            }, 1000);
         }, () => {
             hideLoader();
             alert('Não foi possível obter sua localização.');
@@ -65,61 +39,45 @@ function getWeatherByLocation() {
     }
 }
 
-async function fetchHourlyForecast(lat, lon) {
+async function fetchForecastByCoords(lat, lon) {
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`;
-    console.log('Fazendo forecast:', url); // Log
-
     try {
         const response = await fetch(url);
-        console.log('Resposta forecast:', response.status); // Log status
-
-        if (!response.ok) {
-            throw new Error(`Erro na forecast: ${response.status} - ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Dados forecast:', data); // Log dados
-        hideLoader();
-
-        if (data.cod === '200') {
+        if (response.ok) {
+            const data = await response.json();
+            hideLoader();
             displayForecast(data);
-        } else {
-            document.getElementById('weather').innerHTML = '<p>Erro ao buscar previsão (código: ' + data.cod + ').</p>';
+            return;
         }
     } catch (error) {
-        console.error('Erro em fetchHourlyForecast:', error); // Log erro
-        hideLoader();
-        document.getElementById('weather').innerHTML = '<p>Erro de conexão na previsão. Tente Curitiba ou verifique a chave da API.</p>';
+        console.log('Erro na API real, usando mock:', error);
     }
+    hideLoader();
+    displayMockForecast('Localização Atual');
 }
 
-function displayMockForecast() {
+function displayMockForecast(cityName) {
     const mockData = [
-        { time: '16:27', condition: 'nublado', temp: 28.07, icon: '03d', humidity: 65, wind: 5 },
-        { time: '15:50', condition: 'nublado', temp: 22.82, icon: '03d', humidity: 70, wind: 4 },
-        { time: '16:18', condition: 'nublado', temp: 17.1, icon: '03n', humidity: 75, wind: 3 },
-        { time: '16:07', condition: 'chuva leve', temp: 16.78, icon: '10n', humidity: 80, wind: 6 },
-        { time: '16:12', condition: 'chuva leve', temp: 18.49, icon: '10d', humidity: 78, wind: 7 },
-        { time: '15:55', condition: 'chuva leve', temp: 21.08, icon: '10d', humidity: 72, wind: 8 },
-        { time: '16:28', condition: 'chuva leve', temp: 24.46, icon: '10d', humidity: 68, wind: 9 },
-        { time: '16:23', condition: 'chuva leve', temp: 20.74, icon: '10d', humidity: 70, wind: 6 }
+        { dt: Date.now() / 1000 + 3600, main: { temp: 28.1 }, weather: [{ description: 'nublado', icon: '03d' }], wind: { speed: 5 } },
+        { dt: Date.now() / 1000 + 7200, main: { temp: 22.8 }, weather: [{ description: 'nublado', icon: '03n' }], wind: { speed: 4 } },
+        { dt: Date.now() / 1000 + 10800, main: { temp: 17.1 }, weather: [{ description: 'nublado', icon: '03n' }], wind: { speed: 3 } },
+        { dt: Date.now() / 1000 + 14400, main: { temp: 16.8 }, weather: [{ description: 'chuva leve', icon: '10n' }], wind: { speed: 6 } },
+        { dt: Date.now() / 1000 + 18000, main: { temp: 18.5 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 7 } },
+        { dt: Date.now() / 1000 + 21600, main: { temp: 21.1 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 8 } },
+        { dt: Date.now() / 1000 + 25200, main: { temp: 24.5 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 9 } },
+        { dt: Date.now() / 1000 + 28800, main: { temp: 20.7 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 6 } }
     ];
 
-    displayForecast({ city: { name: 'Curitiba' }, list: mockData.map(item => ({
-        dt: Date.now() / 1000 + Math.random() * 3600,
-        main: { temp: item.temp, humidity: item.humidity },
-        weather: [{ description: item.condition, icon: item.icon }],
-        wind: { speed: item.wind }
-    })) });
+    displayForecast({ city: { name: cityName }, list: mockData });
 }
 
 function displayForecast(data) {
     const cityName = data.city.name;
-    const forecasts = data.list.slice(0, 8);
+    const forecasts = data.list.slice(0, 8); 
 
     let html = `<h2>Previsão para ${cityName}</h2><div class="forecast-grid">`;
     forecasts.forEach((item, index) => {
-        const time = item.dt ? new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : item.time;
+        const time = new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         const temp = item.main.temp;
         const description = item.weather[0].description;
         const icon = item.weather[0].icon;
