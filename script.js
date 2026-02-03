@@ -1,125 +1,77 @@
-const apiKey = '5be142b2adf71122421c1e95284be4ac';  
+const key = "5be142b2adf71122421c1e95284be4ac";
 
-let isCompact = false;
-let isNight = false;
+const input = document.querySelector(".input-cidade");
+const botao = document.querySelector(".botao-busca");
+const cidadeTexto = document.querySelector(".cidade");
+const tempTexto = document.querySelector(".temp");
+const textoPrevisao = document.querySelector(".texto-previsao");
+const icone = document.querySelector(".icone");
+const umidadeTexto = document.querySelector(".umidade-texto");
+const containerPrevisao = document.querySelector(".previsao-container");
 
-async function getWeather() {
-    const city = document.getElementById('city').value;
-    if (!city) {
-        alert('Por favor, digite o nome de uma cidade.');
-        return;
-    }
-
-    showLoader();
-    console.log(`Buscando forecast para: ${city}`);
-
-    setTimeout(() => {
-        hideLoader();
-        displayMockForecast(city);
-    }, 1000);
+function cliqueiNoBotao() {
+    const cidade = input.value;
+    if(cidade) buscarCidade(cidade);
 }
 
-function getWeatherByLocation() {
-    if (navigator.geolocation) {
-        showLoader();
-        navigator.geolocation.getCurrentPosition(position => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-          
-            setTimeout(() => {
-                hideLoader();
-                displayMockForecast('Sua Localização');
-            }, 1000);
-        }, () => {
-            hideLoader();
-            alert('Não foi possível obter sua localização.');
-        });
-    } else {
-        alert('Geolocalização não suportada pelo navegador.');
-    }
+function pegarDiaSemana(dataString) {
+    const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const data = new Date(dataString * 1000);
+    return dias[data.getDay()];
 }
 
-async function fetchForecastByCoords(lat, lon) {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`;
+async function buscarCidade(cidade) {
     try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            hideLoader();
-            displayForecast(data);
+        const respostaAtual = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${key}&lang=pt_br&units=metric`);
+        const dadosAtual = await respostaAtual.json();
+
+        if (dadosAtual.cod === "404") {
+            alert("Cidade não encontrada!");
             return;
         }
+
+        const respostaPrevisao = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cidade}&appid=${key}&lang=pt_br&units=metric`);
+        const dadosPrevisao = await respostaPrevisao.json();
+
+        mostrarDadosAtuais(dadosAtual);
+        mostrarPrevisao(dadosPrevisao);
+
     } catch (error) {
-        console.log('Erro na API real, usando mock:', error);
+        console.error(error);
+        alert("Erro ao conectar.");
     }
-    hideLoader();
-    displayMockForecast('Localização Atual');
 }
 
-function displayMockForecast(cityName) {
-    const mockData = [
-        { dt: Date.now() / 1000 + 3600, main: { temp: 28.1 }, weather: [{ description: 'nublado', icon: '03d' }], wind: { speed: 5 } },
-        { dt: Date.now() / 1000 + 7200, main: { temp: 22.8 }, weather: [{ description: 'nublado', icon: '03n' }], wind: { speed: 4 } },
-        { dt: Date.now() / 1000 + 10800, main: { temp: 17.1 }, weather: [{ description: 'nublado', icon: '03n' }], wind: { speed: 3 } },
-        { dt: Date.now() / 1000 + 14400, main: { temp: 16.8 }, weather: [{ description: 'chuva leve', icon: '10n' }], wind: { speed: 6 } },
-        { dt: Date.now() / 1000 + 18000, main: { temp: 18.5 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 7 } },
-        { dt: Date.now() / 1000 + 21600, main: { temp: 21.1 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 8 } },
-        { dt: Date.now() / 1000 + 25200, main: { temp: 24.5 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 9 } },
-        { dt: Date.now() / 1000 + 28800, main: { temp: 20.7 }, weather: [{ description: 'chuva leve', icon: '10d' }], wind: { speed: 6 } }
-    ];
-
-    displayForecast({ city: { name: cityName }, list: mockData });
+function mostrarDadosAtuais(dados) {
+    cidadeTexto.innerText = dados.name + ", " + dados.sys.country;
+    tempTexto.innerText = Math.floor(dados.main.temp) + "°C";
+    textoPrevisao.innerText = dados.weather[0].description;
+    umidadeTexto.innerText = "Umidade: " + dados.main.humidity + "%";
+    icone.src = `https://openweathermap.org/img/wn/${dados.weather[0].icon}@2x.png`;
 }
 
-function displayForecast(data) {
-    const cityName = data.city.name;
-    const forecasts = data.list.slice(0, 8); 
+function mostrarPrevisao(dados) {
+    containerPrevisao.innerHTML = ""; 
+    const indicesParaPegar = [7, 15, 23, 31]; 
 
-    let html = `<h2>Previsão para ${cityName}</h2><div class="forecast-grid">`;
-    forecasts.forEach((item, index) => {
-        const time = new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        const temp = item.main.temp;
-        const description = item.weather[0].description;
-        const icon = item.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${icon}.png`;
-        const humidity = item.main.humidity || 'N/A';
-        const wind = item.wind ? item.wind.speed : 'N/A';
-        const conditionClass = description.includes('nublado') ? 'nublado' : 'chuva-leve';
-
-        html += `
-            <div class="forecast-item ${conditionClass}" style="animation-delay: ${index * 0.1}s;">
-                <div class="tooltip">
-                    <p class="time">${time}</p>
-                    <img src="${iconUrl}" alt="${description}">
-                    <p class="temp">${temp}°C</p>
-                    <p>${description}</p>
-                    <span class="tooltiptext">Umidade: ${humidity}%<br>Vento: ${wind} m/s</span>
+    indicesParaPegar.forEach(index => {
+        if(dados.list[index]) {
+            const dia = dados.list[index];
+            const html = `
+                <div class="dia-item">
+                    <p class="dia-nome">${pegarDiaSemana(dia.dt)}</p>
+                    <img class="dia-icone" src="https://openweathermap.org/img/wn/${dia.weather[0].icon}.png" alt="icon">
+                    <p class="dia-temp">${Math.floor(dia.main.temp)}°C</p>
                 </div>
-            </div>
-        `;
+            `;
+            containerPrevisao.innerHTML += html;
+        }
     });
-    html += '</div>';
-    document.getElementById('weather').innerHTML = html;
-    document.getElementById('toggleView').classList.remove('hidden');
 }
 
-function toggleView() {
-    const weather = document.getElementById('weather');
-    isCompact = !isCompact;
-    weather.classList.toggle('compact');
-    document.getElementById('toggleView').textContent = isCompact ? 'Vista Expandida' : 'Vista Compacta';
-}
+botao.addEventListener("click", cliqueiNoBotao);
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") cliqueiNoBotao();
+});
 
-function toggleTheme() {
-    isNight = !isNight;
-    document.body.classList.toggle('night');
-    document.querySelector('.theme-btn').textContent = isNight ? 'Tema Diurno' : 'Tema Noturno';
-}
-
-function showLoader() {
-    document.getElementById('loader').classList.remove('hidden');
-}
-
-function hideLoader() {
-    document.getElementById('loader').classList.add('hidden');
-}
+buscarCidade("São Paulo");

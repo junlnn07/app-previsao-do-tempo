@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Previsão do Tempo Horária</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Previsão do Tempo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🌤️ Previsão do Tempo Horária</h1>
-        <input type="text" id="city" placeholder="Digite o nome da cidade" title="Exemplo: Curitiba" />
-        <button onclick="getWeather()" class="btn">Buscar por Cidade</button>
-        <button onclick="getWeatherByLocation()" class="btn">Usar Minha Localização</button>
-        <button onclick="toggleTheme()" class="btn theme-btn">Tema Noturno</button>
-        <div id="loader" class="loader hidden"></div>
-        <div id="weather" class="fade-in">
-            <button id="toggleView" class="btn toggle-btn hidden" onclick="toggleView()">Alternar Vista</button>
+
+    <div class="caixa-maior">
+        <div class="busca-container">
+            <input class="input-cidade" placeholder="Digite a cidade..." type="text">
+            <button class="botao-busca">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+        </div>
+
+        <div class="dados-clima">
+            <h2 class="cidade">--</h2>
+            <p class="temp">--°C</p>
+            <div class="descricao-container">
+                <img class="icone" src="https://openweathermap.org/img/wn/04d.png" alt="Ícone">
+                <p class="texto-previsao">--</p>
+            </div>
+            <div class="umidade">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9-4.5 0-9-5.5-9-10-4.5 4.5-9 10-9 10 0 4.97 4.03 9 9 9z"/></svg>
+                <span class="umidade-texto">Umidade: --%</span>
+            </div>
+        </div>
+
+        <div class="divisor"></div>
+
+        <div class="previsao-container">
+            <p style="width: 100%; text-align: center; color: #999;">Carregando...</p>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, #87CEEB, #B0E0E6, #87CEEB);
+    background-size: 300% 300%;
+    animation: skyAnimation 20s ease infinite alternate;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+@keyframes skyAnimation {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+.caixa-maior {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    color: #555;
+    padding: 2em;
+    border-radius: 25px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.busca-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    background: #f0f0f0;
+    border-radius: 30px;
+    padding: 5px;
+}
+
+input {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: transparent;
+    flex: 1;
+    font-size: 16px;
+    color: #333;
+}
+
+button {
+    border: none;
+    outline: none;
+    background: #7c7c7c;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background: #555;
+}
+
+.cidade { font-size: 26px; font-weight: 600; margin-bottom: 5px; color: #333; }
+.temp { font-size: 50px; font-weight: 700; margin: 10px 0; color: #222; }
+
+.descricao-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.icone { width: 80px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+.texto-previsao { text-transform: capitalize; margin-left: 10px; font-size: 18px; font-weight: 600; }
+
+.umidade { margin-top: 10px; font-size: 15px; display: flex; align-items: center; justify-content: center; color: #666; }
+.umidade svg { width: 20px; fill: #0575e6; margin-right: 5px; }
+
+.divisor {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 25px 0;
+    width: 100%;
+}
+
+.previsao-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.dia-item {
+    background: #f9f9f9;
+    border-radius: 15px;
+    padding: 15px 5px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.dia-item:hover {
+    transform: translateY(-5px);
+}
+
+.dia-nome { font-weight: 700; font-size: 14px; color: #333; margin-bottom: 5px; }
+.dia-icone { width: 50px; }
+.dia-temp { font-weight: 600; font-size: 16px; color: #555; }
